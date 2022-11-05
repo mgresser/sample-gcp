@@ -7,15 +7,23 @@ resource "google_project" "demo" {
   billing_account = var.billing_account
 }
 
+resource "null_resource" "use_project" {
+  provisioner "local-exec" {
+    command = "gcloud config set project ${google_project.demo.project_id}"
+  }
+
+  depends_on = [google_project.demo]
+}
+
 # Use `gcloud` to enable:
 # - serviceusage.googleapis.com
 # - cloudresourcemanager.googleapis.com
 resource "null_resource" "enable_service_usage_api" {
   provisioner "local-exec" {
-    command = "gcloud services enable serviceusage.googleapis.com cloudresourcemanager.googleapis.com --project ${google_project.demo.project_id}"
+    command = "gcloud services enable serviceusage.googleapis.com cloudresourcemanager.googleapis.com billingbudgets.googleapis.com --project ${google_project.demo.project_id}"
   }
 
-  depends_on = [google_project.demo]
+  depends_on = [null_resource.use_project]
 }
 
 # Wait for the new configuration to propagate
@@ -213,6 +221,7 @@ resource "null_resource" "enable_budgets" {
   provisioner "local-exec" {
     command = "gcloud billing budgets create --billing-account=${var.billing_account} --display-name=${var.budget_name} --budget-amount=${var.budget_amount}${var.budget_currency} --threshold-rule=percent=0.80 --threshold-rule=percent=1.0,basis=forecasted-spend"
   }
+  depends_on = [null_resource.enable_service_usage_api]
 }
 
 resource "google_monitoring_notification_channel" "notification_channel" {
