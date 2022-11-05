@@ -37,9 +37,10 @@ For the Kubernetes cluster and the Jenkins deployment, first pull the kubeconfig
 
 Verify connectivity using `kubectl get nodes`:
 ```
-NAME                          STATUS   ROLES    AGE    VERSION
-ip-10-0-10-131.ec2.internal   Ready    <none>   139m   v1.21.14-eks-ba74326
-ip-10-0-11-77.ec2.internal    Ready    <none>   139m   v1.21.14-eks-ba74326
+NAME                                                  STATUS   ROLES    AGE     VERSION
+gk3-sample-gcp-gke-8f473-default-pool-2ff02bb9-1v40   Ready    <none>   6m50s   v1.23.8-gke.1900
+gk3-sample-gcp-gke-8f473-default-pool-fa31c74c-2mks   Ready    <none>   6m50s   v1.23.8-gke.1900
+gk3-sample-gcp-gke-8f473-nap-1xd9lkku-310f9805-z9hg   Ready    <none>   4m38s   v1.23.8-gke.1900
 ```
 
 Get the admin password of Jenkins with:

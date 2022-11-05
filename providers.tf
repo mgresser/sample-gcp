@@ -1,8 +1,6 @@
 provider "google" {
 }
 
-
-
 provider "kubernetes" {
   host                   = google_container_cluster.demo.endpoint
   token                  = data.google_client_config.demo.access_token
