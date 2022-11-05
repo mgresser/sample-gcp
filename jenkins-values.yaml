@@ -1,0 +1,25 @@
+controller:
+  serviceType: LoadBalancer
+
+  resources:
+    requests:
+      cpu: "2000m"
+      memory: "4096Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+
+  persistence:
+    volumes:
+      - name: mongodb-vol
+    configMap:
+      name: jenkins-mongodb
+    mounts:
+    - name: mongodb-vol
+      mountPath: /var/mongodb
+
+  installPlugins:
+    - configuration-as-code:latest
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
