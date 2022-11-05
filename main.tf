@@ -12,7 +12,7 @@ resource "google_project" "demo" {
 # - cloudresourcemanager.googleapis.com
 resource "null_resource" "enable_service_usage_api" {
   provisioner "local-exec" {
-    command = "gcloud services enable serviceusage.googleapis.com cloudresourcemanager.googleapis.com billingbudgets.googleapis.com --project ${google_project.demo.project_id}"
+    command = "gcloud services enable serviceusage.googleapis.com cloudresourcemanager.googleapis.com --project ${google_project.demo.project_id}"
   }
 
   depends_on = [google_project.demo]
@@ -29,7 +29,6 @@ resource "time_sleep" "wait_project_init" {
 # Enable services in newly created GCP Project.
 resource "google_project_service" "gcp_services" {
   for_each = toset([
-    "billingbudgets.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
     "container.googleapis.com",
@@ -209,36 +208,11 @@ resource "helm_release" "jenkins" {
 
 ## Budget Notifications
 
-resource "google_billing_budget" "budget" {
-  billing_account = var.billing_account
-  display_name    = var.budget_name
 
-  amount {
-    specified_amount {
-      currency_code = var.budget_currency
-      units         = var.budget_amount
-    }
+resource "null_resource" "enable_budgets" {
+  provisioner "local-exec" {
+    command = "gcloud billing budgets create --billing-account=${var.billing_account} --display-name=${var.budget_name} --budget-amount=${var.budget_amount}${var.budget_currency} --threshold-rule=percent=0.80 --threshold-rule=percent=1.0,basis=forecasted-spend"
   }
-
-  threshold_rules {
-    threshold_percent = 1.0
-  }
-  threshold_rules {
-    threshold_percent = 0.8
-    spend_basis       = "FORECASTED_SPEND"
-  }
-  threshold_rules {
-    threshold_percent = 1.0
-    spend_basis       = "FORECASTED_SPEND"
-  }
-
-  all_updates_rule {
-    monitoring_notification_channels = [
-      google_monitoring_notification_channel.notification_channel.id,
-    ]
-    disable_default_iam_recipients = true
-  }
-  depends_on = [google_project_service.gcp_services]
 }
 
 resource "google_monitoring_notification_channel" "notification_channel" {
@@ -249,5 +223,5 @@ resource "google_monitoring_notification_channel" "notification_channel" {
   labels = {
     email_address = var.budget_email
  }
-  depends_on = [google_project_service.gcp_services]
+  depends_on = [null_resource.enable_budgets]
 }
