@@ -24,7 +24,7 @@ Terraform will build the following:
 - VPC
 - Security Groups (accessible from `0.0.0.0/0`)
 - MongoDB instance (over-permissive IAM roles TBD)
-- S3 Bucket (globally accessible)
+- Cloud Storage Bucket (globally accessible)
 - GKE autopilot cluster running [Jenkins Helm chart](https://github.com/jenkinsci/helm-charts)
 
 This can take 10-20 minutes.  Once done, you can log in to the MongoDB instance using the gcloud command:
