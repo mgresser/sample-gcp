@@ -219,7 +219,7 @@ resource "helm_release" "jenkins" {
 
 resource "null_resource" "enable_budgets" {
   provisioner "local-exec" {
-    command = "gcloud billing budgets create --billing-account=${var.billing_account} --display-name=${var.budget_name} --budget-amount=${var.budget_amount}${var.budget_currency} --threshold-rule=percent=0.80 --threshold-rule=percent=1.0,basis=forecasted-spend"
+    command = "gcloud billing budgets create --billing-account=${var.billing_account} --display-name=\"${var.budget_name}\" --budget-amount=${var.budget_amount}${var.budget_currency} --threshold-rule=percent=0.80 --threshold-rule=percent=1.0,basis=forecasted-spend"
   }
   depends_on = [null_resource.enable_service_usage_api]
 }
