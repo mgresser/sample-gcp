@@ -7,7 +7,7 @@ output "jenkins_password_command" {
 }
 
 output "register_kubectl_command" {
-  value = "gcloud container clusters get-credentials ${google_container_cluster.demo.name}--region us-east1 --project ${google_project.demo.id}"
+  value = "gcloud container clusters get-credentials ${google_container_cluster.demo.name} --region us-east1 --project ${google_project.demo.project_id}"
 }
 
 output "mongodb_instance_connect_command" {
